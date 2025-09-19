@@ -1,14 +1,13 @@
 package br.gov.caixa.adapters.inbound.rest;
 
-import br.gov.caixa.application.usecase.CriarProdutoUseCase;
+import br.gov.caixa.application.usecase.*;
 import br.gov.caixa.domain.model.Produto;
 import jakarta.inject.Inject;
-import jakarta.ws.rs.Consumes;
-import jakarta.ws.rs.POST;
-import jakarta.ws.rs.Path;
-import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
+
+import java.util.List;
 
 @Path("/produtos")
 @Produces(MediaType.APPLICATION_JSON)
@@ -18,9 +17,51 @@ public class ProdutoResource {
     @Inject
     CriarProdutoUseCase criarProdutoUseCase;
 
+    @Inject
+    BuscarProdutoUseCase buscarProdutoUseCase;
+
+    @Inject
+    ListarProdutosUseCase listarProdutosUseCase;;
+
+    @Inject
+    AtualizarProdutoUseCase atualizarProdutoUseCase;
+
+    @Inject
+    RemoverProdutoUseCase removerProdutoUseCase;
+
+    @GET
+    @Path("/{id}")
+    public Response buscarProdutoPorId(@PathParam("id") Long id){
+        return buscarProdutoUseCase.executar(id)
+                .map(produto -> Response.ok(produto).build())
+                .orElse(Response.status(Response.Status.NOT_FOUND).build());
+    }
+
+    @GET
+    public Response listarProdutos(){
+        List<Produto> produtos = listarProdutosUseCase.executar();
+        return Response.ok(produtos).build();
+    }
+
     @POST
     public Response criarProduto(Produto produto){
         Produto produtoCriado = criarProdutoUseCase.executar(produto);
         return Response.status(Response.Status.CREATED).entity(produtoCriado).build();
     }
+
+    @PUT
+    @Path("/{id}")
+    public Response atualizarProduto(@PathParam("id") Long id, Produto produto){
+        produto.setId(id);
+        Produto produtoAtualizado = atualizarProdutoUseCase.executar(produto);
+        return Response.ok(produtoAtualizado).build();
+    }
+
+    @DELETE
+    @Path("/{id}")
+    public Response deletarProduto(@PathParam("id") Long id){
+        removerProdutoUseCase.executar(id);
+        return Response.noContent().build();
+    }
+
 }

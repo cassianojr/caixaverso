@@ -3,7 +3,6 @@ package br.gov.caixa.application.usecase;
 import br.gov.caixa.domain.model.Produto;
 import br.gov.caixa.ports.outbound.ProdutoRepository;
 import io.quarkus.test.junit.QuarkusTest;
-import jakarta.inject.Inject;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -39,7 +38,7 @@ class CriarProdutoUseCaseTest {
 		Produto resultado = useCase.executar(entrada);
 
 		assertNotNull(resultado);
-		assertEquals(1L, resultado.getId());
+		assertEquals(1L, resultado.id());
 		verify(produtoRepository, times(1)).salvar(entrada);
 	}
 

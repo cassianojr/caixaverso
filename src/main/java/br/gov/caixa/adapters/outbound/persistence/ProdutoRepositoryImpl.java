@@ -21,9 +21,9 @@ public class ProdutoRepositoryImpl implements ProdutoRepository, PanacheReposito
             entity.persist();
         }else{
             entity = findById(entity.getId());
-            entity.setNome(produto.getNome());
-            entity.setTaxaJurosAnual(produto.getTaxaJurosAnual());
-            entity.setPrazoMaximoMeses(produto.getPrazoMaximoMeses());
+            entity.setNome(produto.nome());
+            entity.setTaxaJurosAnual(produto.taxaJurosAnual());
+            entity.setPrazoMaximoMeses(produto.prazoMaximoMeses());
         }
         return toDomain(entity);
     }
@@ -49,10 +49,10 @@ public class ProdutoRepositoryImpl implements ProdutoRepository, PanacheReposito
 
     private ProdutoEntity toEntity(Produto produto) {
         ProdutoEntity entity = new ProdutoEntity();
-        entity.setId(produto.getId());
-        entity.setNome(produto.getNome());
-        entity.setTaxaJurosAnual(produto.getTaxaJurosAnual());
-        entity.setPrazoMaximoMeses(produto.getPrazoMaximoMeses());
+        entity.setId(produto.id());
+        entity.setNome(produto.nome());
+        entity.setTaxaJurosAnual(produto.taxaJurosAnual());
+        entity.setPrazoMaximoMeses(produto.prazoMaximoMeses());
         return entity;
     }
 

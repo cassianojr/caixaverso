@@ -12,15 +12,15 @@ public class CriarProdutoUseCase {
     ProdutoRepository produtoRepository;
 
     public Produto executar(Produto produto) {
-        if (produto.getTaxaJurosAnual() == null || produto.getTaxaJurosAnual() <= 0) {
+        if (produto.taxaJurosAnual() == null || produto.taxaJurosAnual() <= 0) {
             throw new IllegalArgumentException("Taxa de juros anual deve ser maior que zero.");
         }
 
-        if (produto.getPrazoMaximoMeses() == null || produto.getPrazoMaximoMeses() <= 0) {
+        if (produto.prazoMaximoMeses() == null || produto.prazoMaximoMeses() <= 0) {
             throw new IllegalArgumentException("Prazo máximo deve ser maior que zero.");
         }
 
-        if (produto.getNome() == null || produto.getNome().isBlank()) {
+        if (produto.nome() == null || produto.nome().isBlank()) {
             throw new IllegalArgumentException("Nome do produto é obrigatório.");
         }
 

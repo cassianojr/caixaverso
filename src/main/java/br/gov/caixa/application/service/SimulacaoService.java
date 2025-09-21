@@ -38,7 +38,7 @@ public class SimulacaoService {
     public ResultadoSimulacao simular(Produto produto, BigDecimal valorSolicitado, int prazoMeses) {
         validarSimulacao(produto, valorSolicitado, prazoMeses);
 
-        BigDecimal taxaMensal = calcularTaxaMensal(BigDecimal.valueOf(produto.getTaxaJurosAnual())); // decimal
+        BigDecimal taxaMensal = calcularTaxaMensal(BigDecimal.valueOf(produto.taxaJurosAnual())); // decimal
         // fórmula PRICE: A = P * i / (1 - (1+i)^-n)
         BigDecimal parcelaPrecisa = calcularParcelaPrecisa(valorSolicitado, prazoMeses, taxaMensal);
         BigDecimal parcelaExibida = parcelaPrecisa.setScale(MONEY_SCALE, RoundingMode.HALF_EVEN);

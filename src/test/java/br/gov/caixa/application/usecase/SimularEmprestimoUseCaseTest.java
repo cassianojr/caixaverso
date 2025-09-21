@@ -10,11 +10,9 @@ import io.quarkus.test.junit.QuarkusTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.math.BigDecimal;
 
@@ -63,7 +61,7 @@ public class SimularEmprestimoUseCaseTest {
         ResultadoSimulacao resultado = useCase.simular(simulacao, 1L);
 
         assertNotNull(resultado);
-        assertEquals(1L, resultado.getProduto().getId());
+        assertEquals(1L, resultado.getProduto().id());
         assertEquals(11178.0, resultado.getValorTotalComJuros().doubleValue(), 0.001);
         assertEquals(931.50, resultado.getParcelaMensal().doubleValue(), 0.001);
 
@@ -140,7 +138,7 @@ public class SimularEmprestimoUseCaseTest {
 
         useCase.simular(simulacao, 5L);
 
-        assertEquals(15.0, produtoMock.getTaxaJurosAnual()); // garantindo que nada alterou
+        assertEquals(15.0, produtoMock.taxaJurosAnual()); // garantindo que nada alterou
         verify(simulacaoService).simular(produtoMock, BigDecimal.valueOf(1000.0), 10);
     }
 }

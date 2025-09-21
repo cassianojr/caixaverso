@@ -28,7 +28,7 @@ public class SimularEmprestimoUseCase implements SimulacaoPort {
                 .orElseThrow(() -> new NotFoundException("Produto não encontrado com ID: " + idProduto));
 
 
-        if(simulacao.getPrazoMeses() > produtoExistente.getPrazoMaximoMeses()){
+        if(simulacao.getPrazoMeses() > produtoExistente.prazoMaximoMeses()){
             throw new NegocioException(Response.Status.BAD_REQUEST.getStatusCode(),"Prazo em meses excede o máximo permitido pelo produto");
         }
 

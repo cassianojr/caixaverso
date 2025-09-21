@@ -10,12 +10,8 @@ import java.util.List;
 
 @ApplicationScoped
 public class ListarProdutosUseCase {
-    private final ProdutoRepository produtoRepository;
-
     @Inject
-    public ListarProdutosUseCase(ProdutoRepository produtoRepository) {
-        this.produtoRepository = produtoRepository;
-    }
+    ProdutoRepository produtoRepository;
 
     public List<Produto> executar() {
         return produtoRepository.listarTodos();

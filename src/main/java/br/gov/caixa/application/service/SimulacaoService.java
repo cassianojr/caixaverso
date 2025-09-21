@@ -19,40 +19,31 @@ public class SimulacaoService {
     private static final MathContext MC = new MathContext(20, RoundingMode.HALF_EVEN);
     private static final int MONEY_SCALE = 2;
 
-    /**
-     * Calcula a taxa efetiva mensal a partir da taxa anual em porcentagem.
-     * Ex.: taxaAnualPercent = 18.0 -> retorna aprox. 0.0138884303
-     */
     public BigDecimal calcularTaxaMensal(BigDecimal taxaAnualPercent) {
         if (taxaAnualPercent == null) {
             throw new NegocioException(Response.Status.BAD_REQUEST.getStatusCode(), "taxaAnualPercent é obrigatório");
         }
-        double annualDecimal = taxaAnualPercent.divide(BigDecimal.valueOf(100), MC).doubleValue();
-        double monthlyDouble = Math.pow(1.0 + annualDecimal, 1.0 / 12.0) - 1.0;
-        return BigDecimal.valueOf(monthlyDouble).round(new MathContext(12, RoundingMode.HALF_EVEN));
+        double anualDecimal = taxaAnualPercent.divide(BigDecimal.valueOf(100), MC).doubleValue();
+        double taxaMensal = Math.pow(1.0 + anualDecimal, 1.0 / 12.0) - 1.0;
+        return BigDecimal.valueOf(taxaMensal).round(new MathContext(12, RoundingMode.HALF_EVEN));
     }
 
-    /**
-     * Executa a simulação (Price) e retorna o resultado completo com memória de cálculo.
-     */
     public ResultadoSimulacao simular(Produto produto, BigDecimal valorSolicitado, int prazoMeses) {
         validarSimulacao(produto, valorSolicitado, prazoMeses);
 
-        BigDecimal taxaMensal = calcularTaxaMensal(BigDecimal.valueOf(produto.taxaJurosAnual())); // decimal
-        // fórmula PRICE: A = P * i / (1 - (1+i)^-n)
-        BigDecimal parcelaPrecisa = calcularParcelaPrecisa(valorSolicitado, prazoMeses, taxaMensal);
-        BigDecimal parcelaExibida = parcelaPrecisa.setScale(MONEY_SCALE, RoundingMode.HALF_EVEN);
+        BigDecimal taxaMensal = calcularTaxaMensal(BigDecimal.valueOf(produto.taxaJurosAnual()));
+        BigDecimal taxaMensalExibida = taxaMensal.setScale(10, RoundingMode.HALF_EVEN);
+
+        BigDecimal parcela = calcularParcela(valorSolicitado, prazoMeses, taxaMensal);
+        BigDecimal parcelaExibida = parcela.setScale(MONEY_SCALE, RoundingMode.HALF_EVEN);
 
         List<MemoriaCalculo> memoria = new ArrayList<>(prazoMeses);
 
-        // variável de cálculo com precisão
-        BigDecimal somaParcelasExibidas = BigDecimal.ZERO;
+        BigDecimal somaParcelas = BigDecimal.ZERO;
 
-        somaParcelasExibidas = calcularPrestacoes(prazoMeses, valorSolicitado, taxaMensal, parcelaPrecisa, memoria, somaParcelasExibidas);
+        somaParcelas = calcularPrestacoes(prazoMeses, valorSolicitado, taxaMensal, parcela, memoria, somaParcelas);
 
-        BigDecimal valorTotalComJuros = somaParcelasExibidas.setScale(MONEY_SCALE, RoundingMode.HALF_EVEN);
-
-        BigDecimal taxaMensalExibida = taxaMensal.setScale(10, RoundingMode.HALF_EVEN);
+        BigDecimal valorTotalComJuros = somaParcelas.setScale(MONEY_SCALE, RoundingMode.HALF_EVEN);
 
         return new ResultadoSimulacao(
                 produto,
@@ -107,13 +98,15 @@ public class SimulacaoService {
         if (prazoMeses <= 0) throw new NegocioException(Response.Status.BAD_REQUEST.getStatusCode(),"prazoMeses deve ser > 0");
     }
 
-    private static BigDecimal calcularParcelaPrecisa(BigDecimal valorSolicitado, int prazoMeses, BigDecimal taxaMensal) {
+    private static BigDecimal calcularParcela(BigDecimal valorSolicitado, int prazoMeses, BigDecimal taxaMensal) {
+        // fórmula PRICE usada: A = P * i / (1 - (1+i)^-n)
+
         BigDecimal umMaisTaxaMensal = BigDecimal.ONE.add(taxaMensal, MC);
-        BigDecimal pow = umMaisTaxaMensal.pow(prazoMeses, MC);                      // (1+i)^n
-        BigDecimal denominator = BigDecimal.ONE.subtract(BigDecimal.ONE.divide(pow, MC), MC); // 1 - 1/(1+i)^n
-        if (denominator.compareTo(BigDecimal.ZERO) == 0) {
+        BigDecimal potencia = umMaisTaxaMensal.pow(prazoMeses, MC);
+        BigDecimal denominador = BigDecimal.ONE.subtract(BigDecimal.ONE.divide(potencia, MC), MC);
+        if (denominador.compareTo(BigDecimal.ZERO) == 0) {
             throw new NegocioException(Response.Status.BAD_REQUEST.getStatusCode(), "Denominador zero na fórmula Price");
         }
-        return valorSolicitado.multiply(taxaMensal, MC).divide(denominator, MC);
+        return valorSolicitado.multiply(taxaMensal, MC).divide(denominador, MC);
     }
 }

@@ -36,7 +36,7 @@ public class SimularEmprestimoUseCaseTest {
 
     @BeforeEach
     void setUp() {
-        MockitoAnnotations.openMocks(this); // redundante com @ExtendWith mas mantido para clareza
+        MockitoAnnotations.openMocks(this);
         produto = new Produto(1L, "Empréstimo Pessoal", 18.0, 24);
     }
 
@@ -143,6 +143,4 @@ public class SimularEmprestimoUseCaseTest {
         assertEquals(15.0, produtoMock.getTaxaJurosAnual()); // garantindo que nada alterou
         verify(simulacaoService).simular(produtoMock, BigDecimal.valueOf(1000.0), 10);
     }
-
-
 }

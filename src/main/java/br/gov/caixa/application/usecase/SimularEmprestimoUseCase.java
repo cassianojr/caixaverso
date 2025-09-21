@@ -16,14 +16,11 @@ import java.math.BigDecimal;
 
 @ApplicationScoped
 public class SimularEmprestimoUseCase implements SimulacaoPort {
-    private final ProdutoRepository produtoRepository;
-    private final SimulacaoService simulacaoService;
+    @Inject
+    ProdutoRepository produtoRepository;
 
     @Inject
-    public SimularEmprestimoUseCase(ProdutoRepository produtoRepository, SimulacaoService simulacaoService) {
-        this.produtoRepository = produtoRepository;
-        this.simulacaoService = simulacaoService;
-    }
+    SimulacaoService simulacaoService;
 
     @Override
     public ResultadoSimulacao simular(Simulacao simulacao, Long idProduto) {
@@ -39,4 +36,5 @@ public class SimularEmprestimoUseCase implements SimulacaoPort {
         int prazoMeses = simulacao.getPrazoMeses();
         return simulacaoService.simular(produtoExistente, valorSolicitado, prazoMeses);
     }
+
 }

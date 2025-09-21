@@ -99,10 +99,9 @@ public class SimulacaoService {
     }
 
     private static BigDecimal calcularParcela(BigDecimal valorSolicitado, int prazoMeses, BigDecimal taxaMensal) {
-        // fórmula PRICE usada: A = P * i / (1 - (1+i)^-n)
 
-        BigDecimal umMaisTaxaMensal = BigDecimal.ONE.add(taxaMensal, MC);
-        BigDecimal potencia = umMaisTaxaMensal.pow(prazoMeses, MC);
+        BigDecimal fator = BigDecimal.ONE.add(taxaMensal, MC);
+        BigDecimal potencia = fator.pow(prazoMeses, MC);
         BigDecimal denominador = BigDecimal.ONE.subtract(BigDecimal.ONE.divide(potencia, MC), MC);
         if (denominador.compareTo(BigDecimal.ZERO) == 0) {
             throw new NegocioException(Response.Status.BAD_REQUEST.getStatusCode(), "Denominador zero na fórmula Price");

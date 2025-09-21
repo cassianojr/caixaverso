@@ -67,3 +67,6 @@ jobs:
             -Dsonar.organization=cassianojr # For SonarCloud
             -Dsonar.host.url=https://sonarcloud.io # For SonarCloud
             -Dsonar.coverage.jacoco.xmlReportPaths=target/jacoco.xml
+            -Dsonar.sources=src/main/java/
+            -Dsonar.language=java
+            -Dsonar.java.binaries=**/target/classes

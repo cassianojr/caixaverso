@@ -4,6 +4,15 @@
 
 Essa API permite cadastrar, atualizar, consultar e remover produtos de crédito, além de simular empréstimos com cálculo de parcelas e validações de negócio.
 
+## Qualidade de código
+O projeto utiliza o SONAR Cloud para análise estática de código, com as seguintes métricas:
+
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=cassianojr_caixaverso&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=cassianojr_caixaverso)
+[![Bugs](https://sonarcloud.io/api/project_badges/measure?project=cassianojr_caixaverso&metric=bugs)](https://sonarcloud.io/summary/new_code?id=cassianojr_caixaverso)
+[![Code Smells](https://sonarcloud.io/api/project_badges/measure?project=cassianojr_caixaverso&metric=code_smells)](https://sonarcloud.io/summary/new_code?id=cassianojr_caixaverso)
+[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=cassianojr_caixaverso&metric=coverage)](https://sonarcloud.io/summary/new_code?id=cassianojr_caixaverso)
+[![Duplicated Lines (%)](https://sonarcloud.io/api/project_badges/measure?project=cassianojr_caixaverso&metric=duplicated_lines_density)](https://sonarcloud.io/summary/new_code?id=cassianojr_caixaverso)
+
 ## Arquitetura
 
 O projeto segue **Arquitetura Hexagonal (Ports & Adapters)**:

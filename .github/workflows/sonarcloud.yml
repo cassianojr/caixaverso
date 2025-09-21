@@ -54,7 +54,7 @@ jobs:
           cache: 'maven'
 
       - name: Build and run tests with JaCoCo
-        run: mvn -B clean verify -Dquarkus.package.write-transformed-bytecode-to-build-output=true
+        run: mvn -B clean package -Dquarkus.package.write-transformed-bytecode-to-build-output=true
 
       - name: SonarQube Scan
         uses: SonarSource/sonarcloud-github-action@master # Use sonarqube-scan-action for SonarQube Server
@@ -66,7 +66,7 @@ jobs:
             -Dsonar.projectKey=cassianojr_caixaverso
             -Dsonar.organization=cassianojr # For SonarCloud
             -Dsonar.host.url=https://sonarcloud.io # For SonarCloud
-            -Dsonar.coverage.jacoco.xmlReportPaths=target/jacoco.xml
+            -Dsonar.coverage.jacoco.xmlReportPaths=target/site/jacoco.xml
             -Dsonar.sources=src/main/java/
             -Dsonar.language=java
             -Dsonar.java.binaries=**/target/classes

@@ -2,7 +2,6 @@ package br.gov.caixa.adapters.inbound.rest;
 
 import br.gov.caixa.application.usecase.*;
 import br.gov.caixa.domain.model.Produto;
-import br.gov.caixa.domain.model.Simulacao;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
@@ -15,20 +14,24 @@ import java.util.List;
 @Consumes(MediaType.APPLICATION_JSON)
 public class ProdutoResource {
 
-    @Inject
-    CriarProdutoUseCase criarProdutoUseCase;
+    private final CriarProdutoUseCase criarProdutoUseCase;
+
+    private final BuscarProdutoUseCase buscarProdutoUseCase;
+
+    private final ListarProdutosUseCase listarProdutosUseCase;
+
+    private final AtualizarProdutoUseCase atualizarProdutoUseCase;
+
+    private final RemoverProdutoUseCase removerProdutoUseCase;
 
     @Inject
-    BuscarProdutoUseCase buscarProdutoUseCase;
-
-    @Inject
-    ListarProdutosUseCase listarProdutosUseCase;;
-
-    @Inject
-    AtualizarProdutoUseCase atualizarProdutoUseCase;
-
-    @Inject
-    RemoverProdutoUseCase removerProdutoUseCase;
+    public ProdutoResource(CriarProdutoUseCase criarProdutoUseCase, BuscarProdutoUseCase buscarProdutoUseCase, ListarProdutosUseCase listarProdutosUseCase, AtualizarProdutoUseCase atualizarProdutoUseCase, RemoverProdutoUseCase removerProdutoUseCase) {
+        this.criarProdutoUseCase = criarProdutoUseCase;
+        this.buscarProdutoUseCase = buscarProdutoUseCase;
+        this.listarProdutosUseCase = listarProdutosUseCase;
+        this.atualizarProdutoUseCase = atualizarProdutoUseCase;
+        this.removerProdutoUseCase = removerProdutoUseCase;
+    }
 
     @GET
     @Path("/{id}")

@@ -10,7 +10,6 @@ C:\Users\cassi\Desktop\projetos\caixaverso\cassianojr\src\main\java\br\gov\caixa
 C:\Users\cassi\Desktop\projetos\caixaverso\cassianojr\src\main\java\br\gov\caixa\application\usecase\ListarProdutosUseCase.java
 C:\Users\cassi\Desktop\projetos\caixaverso\cassianojr\src\main\java\br\gov\caixa\application\usecase\RemoverProdutoUseCase.java
 C:\Users\cassi\Desktop\projetos\caixaverso\cassianojr\src\main\java\br\gov\caixa\application\usecase\SimularEmprestimoUseCase.java
-C:\Users\cassi\Desktop\projetos\caixaverso\cassianojr\src\main\java\br\gov\caixa\config\OpenApiConfig.java
 C:\Users\cassi\Desktop\projetos\caixaverso\cassianojr\src\main\java\br\gov\caixa\domain\exception\NegocioException.java
 C:\Users\cassi\Desktop\projetos\caixaverso\cassianojr\src\main\java\br\gov\caixa\domain\exception\NegocioExceptionMapper.java
 C:\Users\cassi\Desktop\projetos\caixaverso\cassianojr\src\main\java\br\gov\caixa\domain\model\MemoriaCalculo.java

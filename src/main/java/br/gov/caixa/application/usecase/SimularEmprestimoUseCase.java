@@ -9,10 +9,8 @@ import br.gov.caixa.ports.inbound.SimulacaoPort;
 import br.gov.caixa.ports.outbound.ProdutoRepository;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
-import jakarta.ws.rs.BadRequestException;
 import jakarta.ws.rs.NotFoundException;
 import jakarta.ws.rs.core.Response;
-import org.jboss.resteasy.reactive.RestResponse;
 
 import java.math.BigDecimal;
 

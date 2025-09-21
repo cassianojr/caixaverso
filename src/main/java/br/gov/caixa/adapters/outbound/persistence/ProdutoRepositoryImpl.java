@@ -2,6 +2,7 @@ package br.gov.caixa.adapters.outbound.persistence;
 
 import br.gov.caixa.domain.model.Produto;
 import br.gov.caixa.ports.outbound.ProdutoRepository;
+import io.quarkus.hibernate.orm.panache.PanacheRepository;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.transaction.Transactional;
 
@@ -10,7 +11,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @ApplicationScoped
-public class ProdutoRepositoryImpl implements ProdutoRepository {
+public class ProdutoRepositoryImpl implements ProdutoRepository, PanacheRepository<ProdutoEntity> {
 
     @Override
     @Transactional
@@ -19,7 +20,7 @@ public class ProdutoRepositoryImpl implements ProdutoRepository {
         if(entity.getId() == null){
             entity.persist();
         }else{
-            entity = ProdutoEntity.findById(entity.getId());
+            entity = findById(entity.getId());
             entity.setNome(produto.getNome());
             entity.setTaxaJurosAnual(produto.getTaxaJurosAnual());
             entity.setPrazoMaximoMeses(produto.getPrazoMaximoMeses());
@@ -29,22 +30,21 @@ public class ProdutoRepositoryImpl implements ProdutoRepository {
 
     @Override
     public Optional<Produto> buscarPorId(Long id) {
-        ProdutoEntity entity = ProdutoEntity.findById(id);
+        ProdutoEntity entity = findById(id);
         return entity != null ? Optional.of(toDomain(entity)) : Optional.empty();
     }
 
     @Override
     public List<Produto> listarTodos() {
-        return ProdutoEntity.listAll()
+        return listAll()
                 .stream()
-                .map(e -> toDomain((ProdutoEntity) e))
-                .collect(Collectors.toList());
+                .map(this::toDomain).toList();
     }
 
     @Override
     @Transactional
     public void remover(Long id) {
-        ProdutoEntity.deleteById(id);
+        deleteById(id);
     }
 
     private ProdutoEntity toEntity(Produto produto) {

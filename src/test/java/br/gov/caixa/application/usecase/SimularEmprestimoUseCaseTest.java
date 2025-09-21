@@ -10,9 +10,11 @@ import io.quarkus.test.junit.QuarkusTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.math.BigDecimal;
 
@@ -34,7 +36,7 @@ public class SimularEmprestimoUseCaseTest {
 
     @BeforeEach
     void setUp() {
-        MockitoAnnotations.openMocks(this);
+        MockitoAnnotations.openMocks(this); // redundante com @ExtendWith mas mantido para clareza
         produto = new Produto(1L, "Empréstimo Pessoal", 18.0, 24);
     }
 
@@ -67,6 +69,79 @@ public class SimularEmprestimoUseCaseTest {
 
         verify(simulacaoService, times(1))
                 .simular(produtoMock, BigDecimal.valueOf(10000.0), 12);
+    }
+
+    @Test
+    @DisplayName("Deve lançar NotFoundException quando produto não existe")
+    void deveLancarNotFoundQuandoProdutoNaoExiste() {
+        when(produtoRepository.buscarPorId(99L)).thenReturn(java.util.Optional.empty());
+
+        Simulacao simulacao = new Simulacao(BigDecimal.valueOf(5000.0), 6);
+
+        var ex = assertThrows(jakarta.ws.rs.NotFoundException.class, () -> useCase.simular(simulacao, 99L));
+        assertTrue(ex.getMessage().contains("Produto não encontrado"));
+        verify(produtoRepository).buscarPorId(99L);
+        verifyNoInteractions(simulacaoService);
+    }
+
+    @Test
+    @DisplayName("Deve lançar NegocioException quando prazo excede máximo")
+    void deveLancarNegocioExceptionQuandoPrazoExcede() {
+        Produto produtoMock = new Produto(2L, "Crédito Consignado", 12.0, 24);
+        when(produtoRepository.buscarPorId(2L)).thenReturn(java.util.Optional.of(produtoMock));
+
+        Simulacao simulacao = new Simulacao(BigDecimal.valueOf(2000.0), 25); // 1 a mais
+
+        NegocioException ex = assertThrows(NegocioException.class, () -> useCase.simular(simulacao, 2L));
+        assertEquals("Prazo em meses excede o máximo permitido pelo produto", ex.getMessage());
+        verify(produtoRepository).buscarPorId(2L);
+        verifyNoInteractions(simulacaoService);
+    }
+
+    @Test
+    @DisplayName("Deve permitir prazo exatamente igual ao máximo")
+    void devePermitirPrazoIgualAoMaximo() {
+        Produto produtoMock = new Produto(3L, "Financiamento", 10.0, 36);
+        when(produtoRepository.buscarPorId(3L)).thenReturn(java.util.Optional.of(produtoMock));
+
+        Simulacao simulacao = new Simulacao(BigDecimal.valueOf(30000.0), 36); // igual ao limite
+
+        ResultadoSimulacao resultadoMock = new ResultadoSimulacao();
+        resultadoMock.setProduto(produtoMock);
+        resultadoMock.setValorSolicitado(simulacao.getValorSolicitado());
+        resultadoMock.setPrazoMeses(simulacao.getPrazoMeses());
+        resultadoMock.setTaxaJurosEfetivaMensal(BigDecimal.valueOf(0.01));
+        resultadoMock.setValorTotalComJuros(BigDecimal.valueOf(33300.0));
+        resultadoMock.setParcelaMensal(BigDecimal.valueOf(925.0));
+
+        when(simulacaoService.simular(produtoMock, simulacao.getValorSolicitado(), simulacao.getPrazoMeses()))
+                .thenReturn(resultadoMock);
+
+        ResultadoSimulacao out = useCase.simular(simulacao, 3L);
+
+        assertNotNull(out);
+        assertEquals(36, out.getPrazoMeses());
+        verify(simulacaoService).simular(produtoMock, BigDecimal.valueOf(30000.0), 36);
+    }
+
+    @Test
+    @DisplayName("Não deve alterar estado do produto passado ao service")
+    void naoDeveAlterarEstadoProduto() {
+        Produto produtoMock = new Produto(5L, "Produto X", 15.0, 12);
+        when(produtoRepository.buscarPorId(5L)).thenReturn(java.util.Optional.of(produtoMock));
+        Simulacao simulacao = new Simulacao(BigDecimal.valueOf(1000.0), 10);
+
+        ResultadoSimulacao resultadoMock = new ResultadoSimulacao();
+        resultadoMock.setProduto(produtoMock);
+        resultadoMock.setValorSolicitado(simulacao.getValorSolicitado());
+        resultadoMock.setPrazoMeses(simulacao.getPrazoMeses());
+
+        when(simulacaoService.simular(produtoMock, BigDecimal.valueOf(1000.0), 10)).thenReturn(resultadoMock);
+
+        useCase.simular(simulacao, 5L);
+
+        assertEquals(15.0, produtoMock.getTaxaJurosAnual()); // garantindo que nada alterou
+        verify(simulacaoService).simular(produtoMock, BigDecimal.valueOf(1000.0), 10);
     }
 
 

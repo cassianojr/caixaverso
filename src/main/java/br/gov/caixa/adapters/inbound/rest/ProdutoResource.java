@@ -2,6 +2,7 @@ package br.gov.caixa.adapters.inbound.rest;
 
 import br.gov.caixa.application.usecase.*;
 import br.gov.caixa.domain.model.Produto;
+import br.gov.caixa.domain.model.Simulacao;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;

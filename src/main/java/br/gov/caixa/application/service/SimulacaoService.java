@@ -25,7 +25,7 @@ public class SimulacaoService {
      */
     public BigDecimal calcularTaxaMensal(BigDecimal taxaAnualPercent) {
         if (taxaAnualPercent == null) {
-            throw new IllegalArgumentException("taxaAnualPercent é obrigatório");
+            throw new NegocioException(Response.Status.BAD_REQUEST.getStatusCode(), "taxaAnualPercent é obrigatório");
         }
         double annualDecimal = taxaAnualPercent.divide(BigDecimal.valueOf(100), MC).doubleValue();
         double monthlyDouble = Math.pow(1.0 + annualDecimal, 1.0 / 12.0) - 1.0;

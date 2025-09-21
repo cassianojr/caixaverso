@@ -2,7 +2,6 @@ package br.gov.caixa.application.usecase;
 
 import br.gov.caixa.application.service.SimulacaoService;
 import br.gov.caixa.domain.exception.NegocioException;
-import br.gov.caixa.domain.model.MemoriaCalculo;
 import br.gov.caixa.domain.model.Produto;
 import br.gov.caixa.domain.model.ResultadoSimulacao;
 import br.gov.caixa.domain.model.Simulacao;

@@ -28,12 +28,12 @@ public class SimularEmprestimoUseCase implements SimulacaoPort {
                 .orElseThrow(() -> new NotFoundException("Produto não encontrado com ID: " + idProduto));
 
 
-        if(simulacao.getPrazoMeses() > produtoExistente.prazoMaximoMeses()){
+        if(simulacao.prazoMeses() > produtoExistente.prazoMaximoMeses()){
             throw new NegocioException(Response.Status.BAD_REQUEST.getStatusCode(),"Prazo em meses excede o máximo permitido pelo produto");
         }
 
-        BigDecimal valorSolicitado = simulacao.getValorSolicitado();
-        int prazoMeses = simulacao.getPrazoMeses();
+        BigDecimal valorSolicitado = simulacao.valorSolicitado();
+        int prazoMeses = simulacao.prazoMeses();
         return simulacaoService.simular(produtoExistente, valorSolicitado, prazoMeses);
     }
 

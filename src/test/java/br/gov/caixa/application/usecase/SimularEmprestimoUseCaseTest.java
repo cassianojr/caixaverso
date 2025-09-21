@@ -2,6 +2,7 @@ package br.gov.caixa.application.usecase;
 
 import br.gov.caixa.application.service.SimulacaoService;
 import br.gov.caixa.domain.exception.NegocioException;
+import br.gov.caixa.domain.model.MemoriaCalculo;
 import br.gov.caixa.domain.model.Produto;
 import br.gov.caixa.domain.model.ResultadoSimulacao;
 import br.gov.caixa.domain.model.Simulacao;
@@ -15,6 +16,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -41,13 +43,15 @@ public class SimularEmprestimoUseCaseTest {
     @Test
     @DisplayName("Deve simular empréstimo com sucesso")
     void deveSimularEmprestimoComSucesso() {
-        ResultadoSimulacao resultadoMock = new ResultadoSimulacao();
-        resultadoMock.setProduto(produto);
-        resultadoMock.setValorSolicitado(BigDecimal.valueOf(10000.0));
-        resultadoMock.setPrazoMeses(12);
-        resultadoMock.setTaxaJurosEfetivaMensal(BigDecimal.valueOf(0.013978));
-        resultadoMock.setValorTotalComJuros(BigDecimal.valueOf(11178.0));
-        resultadoMock.setParcelaMensal(BigDecimal.valueOf(931.50));
+        ResultadoSimulacao resultadoMock = new ResultadoSimulacao(
+                produto,
+                BigDecimal.valueOf(10000.0),
+                12,
+                BigDecimal.valueOf(0.013978),
+                BigDecimal.valueOf(11178.0),
+                BigDecimal.valueOf(931.50),
+                new ArrayList<>()
+        );
 
         Produto produtoMock = new Produto(1L, "Empréstimo Pessoal", 18.0, 24);
 
@@ -61,9 +65,9 @@ public class SimularEmprestimoUseCaseTest {
         ResultadoSimulacao resultado = useCase.simular(simulacao, 1L);
 
         assertNotNull(resultado);
-        assertEquals(1L, resultado.getProduto().id());
-        assertEquals(11178.0, resultado.getValorTotalComJuros().doubleValue(), 0.001);
-        assertEquals(931.50, resultado.getParcelaMensal().doubleValue(), 0.001);
+        assertEquals(1L, resultado.produto().id());
+        assertEquals(11178.0, resultado.valorTotalComJuros().doubleValue(), 0.001);
+        assertEquals(931.50, resultado.parcelaMensal().doubleValue(), 0.001);
 
         verify(simulacaoService, times(1))
                 .simular(produtoMock, BigDecimal.valueOf(10000.0), 12);
@@ -104,21 +108,23 @@ public class SimularEmprestimoUseCaseTest {
 
         Simulacao simulacao = new Simulacao(BigDecimal.valueOf(30000.0), 36); // igual ao limite
 
-        ResultadoSimulacao resultadoMock = new ResultadoSimulacao();
-        resultadoMock.setProduto(produtoMock);
-        resultadoMock.setValorSolicitado(simulacao.getValorSolicitado());
-        resultadoMock.setPrazoMeses(simulacao.getPrazoMeses());
-        resultadoMock.setTaxaJurosEfetivaMensal(BigDecimal.valueOf(0.01));
-        resultadoMock.setValorTotalComJuros(BigDecimal.valueOf(33300.0));
-        resultadoMock.setParcelaMensal(BigDecimal.valueOf(925.0));
+        ResultadoSimulacao resultadoMock = new ResultadoSimulacao(
+                produtoMock,
+                simulacao.valorSolicitado(),
+                simulacao.prazoMeses(),
+                BigDecimal.valueOf(0.01),
+                BigDecimal.valueOf(33300.0),
+                BigDecimal.valueOf(925.0),
+                new ArrayList<>()
+        );
 
-        when(simulacaoService.simular(produtoMock, simulacao.getValorSolicitado(), simulacao.getPrazoMeses()))
+        when(simulacaoService.simular(produtoMock, simulacao.valorSolicitado(), simulacao.prazoMeses()))
                 .thenReturn(resultadoMock);
 
         ResultadoSimulacao out = useCase.simular(simulacao, 3L);
 
         assertNotNull(out);
-        assertEquals(36, out.getPrazoMeses());
+        assertEquals(36, out.prazoMeses());
         verify(simulacaoService).simular(produtoMock, BigDecimal.valueOf(30000.0), 36);
     }
 
@@ -129,10 +135,16 @@ public class SimularEmprestimoUseCaseTest {
         when(produtoRepository.buscarPorId(5L)).thenReturn(java.util.Optional.of(produtoMock));
         Simulacao simulacao = new Simulacao(BigDecimal.valueOf(1000.0), 10);
 
-        ResultadoSimulacao resultadoMock = new ResultadoSimulacao();
-        resultadoMock.setProduto(produtoMock);
-        resultadoMock.setValorSolicitado(simulacao.getValorSolicitado());
-        resultadoMock.setPrazoMeses(simulacao.getPrazoMeses());
+        ResultadoSimulacao resultadoMock = new ResultadoSimulacao(
+                produtoMock,
+                simulacao.valorSolicitado(),
+                simulacao.prazoMeses(),
+                null,
+                null,
+                null,
+                null
+        );
+
 
         when(simulacaoService.simular(produtoMock, BigDecimal.valueOf(1000.0), 10)).thenReturn(resultadoMock);
 

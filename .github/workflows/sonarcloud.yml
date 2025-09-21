@@ -66,6 +66,6 @@ jobs:
             -Dsonar.projectKey=cassianojr_caixaverso
             -Dsonar.organization=cassianojr
             -Dsonar.host.url=https://sonarcloud.io
-            -Dsonar.coverage.jacoco.xmlReportPaths=target/site/jacoco.xml
+            -Dsonar.coverage.jacoco.xmlReportPaths=target/jacoco-xml/jacoco.xml
             -Dsonar.sources=src/main/java
             -Dsonar.java.binaries=target/classes

@@ -8,8 +8,12 @@ import jakarta.inject.Inject;
 @ApplicationScoped
 public class AtualizarProdutoUseCase {
 
+    private final ProdutoRepository produtoRepository;
+
     @Inject
-    ProdutoRepository produtoRepository;
+    public AtualizarProdutoUseCase(ProdutoRepository produtoRepository) {
+        this.produtoRepository = produtoRepository;
+    }
 
     public Produto executar(Produto produto) {
         return produtoRepository.salvar(produto);

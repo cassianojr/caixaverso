@@ -8,8 +8,12 @@ import jakarta.inject.Inject;
 @ApplicationScoped
 public class CriarProdutoUseCase {
 
+    private final ProdutoRepository produtoRepository;
+
     @Inject
-    ProdutoRepository produtoRepository;
+    public CriarProdutoUseCase(ProdutoRepository produtoRepository) {
+        this.produtoRepository = produtoRepository;
+    }
 
     public Produto executar(Produto produto) {
         if (produto.taxaJurosAnual() == null || produto.taxaJurosAnual() <= 0) {

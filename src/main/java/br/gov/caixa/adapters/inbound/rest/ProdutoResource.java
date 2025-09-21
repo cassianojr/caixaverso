@@ -56,7 +56,7 @@ public class ProdutoResource {
     @PUT
     @Path("/{id}")
     public Response atualizarProduto(@PathParam("id") Long id, Produto produto){
-        produto = produto.withId(id);
+        produto = new Produto(id, produto.nome(), produto.taxaJurosAnual(), produto.prazoMaximoMeses());
         Produto produtoAtualizado = atualizarProdutoUseCase.executar(produto);
         return Response.ok(produtoAtualizado).build();
     }

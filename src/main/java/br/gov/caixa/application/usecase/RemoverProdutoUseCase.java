@@ -6,8 +6,12 @@ import jakarta.inject.Inject;
 
 @ApplicationScoped
 public class RemoverProdutoUseCase {
+    private final ProdutoRepository produtoRepository;
+
     @Inject
-    ProdutoRepository produtoRepository;
+    public RemoverProdutoUseCase(ProdutoRepository produtoRepository) {
+        this.produtoRepository = produtoRepository;
+    }
 
     public void executar(Long id) {
         if (id == null) {

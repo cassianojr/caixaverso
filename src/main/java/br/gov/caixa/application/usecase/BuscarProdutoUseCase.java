@@ -10,8 +10,12 @@ import java.util.Optional;
 @ApplicationScoped
 public class BuscarProdutoUseCase {
 
+    private final ProdutoRepository produtoRepository;
+
     @Inject
-    ProdutoRepository produtoRepository;
+    public BuscarProdutoUseCase(ProdutoRepository produtoRepository) {
+        this.produtoRepository = produtoRepository;
+    }
 
     public Optional<Produto> executar(Long id) {
         return produtoRepository.buscarPorId(id);

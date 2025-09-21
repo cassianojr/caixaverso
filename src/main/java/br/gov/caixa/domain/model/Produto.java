@@ -5,8 +5,4 @@ public record Produto(
         String nome,
         Double taxaJurosAnual,
         Integer prazoMaximoMeses
-) {
-    public Produto withId(Long id) {
-        return new Produto(id, this.nome, this.taxaJurosAnual, this.prazoMaximoMeses);
-    }
-}
+) {}

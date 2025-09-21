@@ -12,6 +12,9 @@ public class ResultadoSimulacao {
     private BigDecimal parcelaMensal;
     private List<MemoriaCalculo> memoriaCalculo;
 
+    public ResultadoSimulacao() {
+    }
+
     public ResultadoSimulacao(Produto produto, BigDecimal valorSolicitado, int prazoMeses, BigDecimal taxaJurosEfetivaMensal, BigDecimal valorTotalComJuros, BigDecimal parcelaMensal, List<MemoriaCalculo> memoriaCalculo) {
         this.produto = produto;
         this.valorSolicitado = valorSolicitado;
